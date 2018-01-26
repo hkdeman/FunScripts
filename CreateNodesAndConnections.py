@@ -56,12 +56,21 @@ def create_an_arc_between_nodes(node1,node2,direction="RIGHT"):
 		node1x,node1y = graph[node1][0]+RADIUS,graph[node1][1]+RADIUS
 		node2x,node2y = graph[node2][0]+RADIUS,graph[node2][1]+RADIUS
 	
-	create_an_arc((node1x,node1y),(node2x,node2y),direction)
+	going_down= True
+	if(node2y>node1y):
+		going_down=False
+
+	create_an_arc((node1x,node1y),(node2x,node2y),going_down,direction)
 	
-def create_an_arc(pos1,pos2,direction="RIGHT"):
+def create_an_arc(pos1,pos2,going_down,direction="RIGHT"):
 	global canvas
 	radius = abs(pos2[1]-pos1[1])/2
 	direct = 1
+	rad_direct = -1
+
+	if(not going_down):
+		rad_direct=1
+
 	if(direction=="LEFT"):
 		direct=-1
 	
@@ -70,14 +79,21 @@ def create_an_arc(pos1,pos2,direction="RIGHT"):
 
 	canvas.setposition(pos1[0],pos1[1])
 	canvas.pendown()
-	canvas.circle(-1*radius,direct*90)
+	canvas.circle(rad_direct*radius,direct*90)
 	x,y = canvas.pos()
-	canvas.setposition(x+ARROW_LENGTH,y+ARROW_LENGTH)
-	canvas.penup()
-	canvas.setposition(x-ARROW_LENGTH,y+ARROW_LENGTH)
+
+	if going_down:
+		canvas.setposition(x+ARROW_LENGTH,y+ARROW_LENGTH)
+		canvas.penup()
+		canvas.setposition(x-ARROW_LENGTH,y+ARROW_LENGTH)
+	else:
+		canvas.setposition(x+ARROW_LENGTH,y-ARROW_LENGTH)
+		canvas.penup()
+		canvas.setposition(x-ARROW_LENGTH,y-ARROW_LENGTH)
+
 	canvas.pendown()
 	canvas.setposition(x,y)
-	canvas.circle(-1*radius,direct*90)
+	canvas.circle(rad_direct*radius,direct*90)
 	canvas.setheading(0)
 
 
