@@ -38,11 +38,11 @@ def create_a_line_between_nodes(node1,node2):
 	canvas.setposition(node1x,node1y)
 	canvas.pendown()
 	canvas.setposition((node2x+node1x)/2,(node2y+node1y)/2)
+	canvas.begin_fill()
 	canvas.setposition((node2x+node1x)/2 + ARROW_LENGTH, (node2y+node1y)/2 + ARROW_LENGTH)
-	canvas.penup()
 	canvas.setposition((node2x+node1x)/2 - ARROW_LENGTH, (node2y+node1y)/2 + ARROW_LENGTH)
-	canvas.pendown()
 	canvas.setposition((node2x+node1x)/2,(node2y+node1y)/2)
+	canvas.end_fill()
 	canvas.setposition(node2x,node2y)
 
 
@@ -81,10 +81,9 @@ def create_an_arc(pos1,pos2,going_down,direction="RIGHT"):
 	canvas.pendown()
 	canvas.circle(rad_direct*radius,direct*90)
 	x,y = canvas.pos()
-
+	canvas.begin_fill()
 	if going_down:
 		canvas.setposition(x+ARROW_LENGTH,y+ARROW_LENGTH)
-		canvas.penup()
 		canvas.setposition(x-ARROW_LENGTH,y+ARROW_LENGTH)
 	else:
 		canvas.setposition(x+ARROW_LENGTH,y-ARROW_LENGTH)
@@ -93,6 +92,7 @@ def create_an_arc(pos1,pos2,going_down,direction="RIGHT"):
 
 	canvas.pendown()
 	canvas.setposition(x,y)
+	canvas.end_fill()
 	canvas.circle(rad_direct*radius,direct*90)
 	canvas.setheading(0)
 
