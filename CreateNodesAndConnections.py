@@ -13,13 +13,26 @@ FONT_SIZE = 12
 FONT = ("Arial", FONT_SIZE, "normal")
 TITLE_FONT_SIZE = 20
 TITLE_FONT = ("Arial",TITLE_FONT_SIZE,"normal")
-COLORS  = ["red","green","blue","orange","purple","pink","yellow"]
+COLORS  = ["red","green","blue","orange","purple","pink"]
 ARROW_LENGTH = 3
 graph = {}
-canvas = turtle.Turtle()
 nodes_labels = [i+1 for i in range(18)]
-canvas.getscreen().setworldcoordinates(-300,-600,350,100)
-canvas.speed(11)
+#canvas.getscreen().setworldcoordinates(-300,-600,300,100)
+
+def adjust_the_page(n_nodes,node_connections):
+	global canvas
+	canvas = turtle.Turtle()
+	canvas.speed(11)
+	max_connection = 0
+	canvas.ht()
+	for connection in node_connections:
+		for node1,node2 in tuplize(connection):
+			if(max_connection<abs(node2-node1)):
+				max_connection = abs(node2-node1)
+	width = max_connection*(2*RADIUS+SPACE)*0.5 + 200
+	height = (n_nodes*RADIUS*2 + (n_nodes-1)*RADIUS)
+	canvas.getscreen().setworldcoordinates(-1*width,-1*height,width,100)
+	
 
 def tuplize(connection):
 	new_connection_tuples = []
@@ -143,10 +156,13 @@ def make_pdf():
 	images = [f for f in listdir("graphs") if isfile(join("graphs", f))]
 	for image in images:
 		pdf.add_page()
-		pdf.image("graphs/"+image)
+		pdf.image("graphs/"+image,x=-25)
 	pdf.output("graphs.pdf", "F")	
 
 def read_the_file():
+	global canvas
+	titles = ["configStart():void","configAccelerate():void","configCruise():void",
+					"initialiseVehicle(String):void","Simulator()","setDisplayObject():void","getPreferredSize():Dimension"]
 	with open("CircleOOSEData.txt","r") as f:
 		lines = f.readlines()
 		n_graph = 1
@@ -154,15 +170,17 @@ def read_the_file():
 		    os.makedirs("graphs")
 
 		for i in range(0,len(lines),2):
-			create_title("Graph "+str(n_graph))
-			create_nodes(int(lines[i]))
+			n_nodes = int(lines[i])	
 			node_connections = [[int(elem) for elem in node.split(",")] for node in lines[i+1].split(";")]
+			adjust_the_page(n_nodes,node_connections)
+			create_title(titles[i//2])
+			create_nodes(n_nodes)
 			create_connections(node_connections)			
 			ps = canvas.getscreen().getcanvas().postscript(colormode="color")
 			im = Image.open(io.BytesIO(ps.encode('utf-8')))
 			im.save(os.path.abspath("graphs/Graph"+str(n_graph)+".png"))
 			canvas.getscreen().clear()
-			n_graph+=1
+			n_graph+=1	
 	make_pdf()
 	canvas.getscreen().bye()
 
