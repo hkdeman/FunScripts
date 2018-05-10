@@ -2,8 +2,8 @@ import socket
 
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
-#s.connect(("10.17.206.221", 3333))
-s.connect(("localhost",3333))
+s.connect(("10.17.202.80", 3333))
+#s.connect(("localhost",3333))
 
 try:
     while(True):
